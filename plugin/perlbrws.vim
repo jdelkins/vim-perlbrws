@@ -886,11 +886,11 @@ function s:Go()
 	let listbuf = bufnr(s:dirfile)
 	if getbufvar(s:prevbuf, "&mod") || bufwinnr(s:prevbuf) < 0
 		topleft new
-		set modifiable
 	else
 		exe bufwinnr(s:prevbuf) . "wincmd w"
 	endif
 	exe "edit " . curfile
+	set modifiable
 	exe listbuf . "bdelete"
 	"exe bufwinnr(curfile) . "wincmd w"
 endfunction
