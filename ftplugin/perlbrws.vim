@@ -35,12 +35,12 @@ let b:did_ftplugin = 1
 " to the selected file.
 nmap <buffer> <2-LeftMouse> <SID>Action
 nmap <buffer> <CR> <SID>Action
-nmap <buffer> <SID>Action :call <SID>Remap()<CR><SID>CRMap
+nmap <buffer> <SID>Action :call <SID>Remap()<CR><SID>ActionMap
 function! s:Remap()
 	if line(".") == 1
-		nmap <buffer> <SID>CRMap <SID>Chdir
+		nmap <buffer> <SID>ActionMap <SID>Chdir
 	else
-		nmap <buffer> <SID>CRMap <SID>Go
+		nmap <buffer> <SID>ActionMap <SID>Go
 	endif
 endf
 nmap <SID>Go <Plug>PerlbrwsGo
@@ -49,7 +49,7 @@ nmap <SID>Chdir :ChdirTo
 
 " Various file actions
 " TODO: these should probably call Plugin functions, not perl code
-nnoremap <buffer> <Tab> 56\|
+nnoremap <buffer> <Tab> 56<Bar>
 nnoremap <buffer> q :bd!<CR>
 nnoremap <buffer> . :perl VimFileBrowser::dots_toggle()<CR>
 nnoremap <buffer> m :perl VimFileBrowser::mark_toggle()<CR>
@@ -61,19 +61,44 @@ nnoremap <buffer> r :perl VimFileBrowser::list()<CR>
 nnoremap <buffer> c :ChdirTo 
 nnoremap <buffer> C :perl VimFileBrowser::do_vim_cd_to_fb_cwd()<CR>
 nnoremap <buffer> x :perl VimFileBrowser::do_exec()<CR>
-nnoremap <buffer> sD :perl VimFileBrowser::set_sort("D")<CR>
-nnoremap <buffer> sd :perl VimFileBrowser::set_sort("d")<CR>
-nnoremap <buffer> sL :perl VimFileBrowser::set_sort("L")<CR>
-nnoremap <buffer> sl :perl VimFileBrowser::set_sort("l")<CR>
-nnoremap <buffer> st :perl VimFileBrowser::set_sort("t")<CR>
+" Note: the follwoing map has an intentional trailing space on the rhs
+nnoremap <buffer> s :SetSort 
 nnoremap <buffer> d :perl VimFileBrowser::do_delete()<CR>
 
 " the follwoing command will change the browser directory, and will
 " tab-complete for directories
-command -buffer -nargs=1 -complete=dir ChdirTo :perl VimFileBrowser::do_chdir_to(<q-args>)<CR>
+command -buffer -nargs=1 -complete=dir ChdirTo :perl VimFileBrowser::do_chdir_to(<q-args>)
+
+" the following command sets the sort type
+command -buffer -nargs=1 -complete=custom,<SID>ListSortTypes SetSort :call <SID>SetSort(<q-args>)
+
+function! s:ListSortTypes(A,L,P)
+	return "directory-caseinsens\ndirectory-casesens\nlex-caseinsens\nlex-casesens\nmodtime"
+endfunction
+
+function! s:SetSort(s)
+	if a:s == "directory-caseinsens"
+		let type = "d"
+	elseif a:s == "directory-casesens"
+		let type = "D"
+	elseif a:s == "lex-caseinsens"
+		let type = "l"
+	elseif a:s == "lex-casesens"
+		let type = "L"
+	elseif a:s == "modtime"
+		let type = "t"
+	else
+		echoerr "Invalid sort method"
+	endif
+	exe "perl VimFileBrowser::set_sort('" . type . "')"
+endfunction
 
 " disable (most?) buffer-editing normal commands -- we try to make it hard to
 " change the buffer contents...
+"
+" Note: this is pretty much obsolete, since the buffer should be set by the
+" plugin to be 'nomodifiable' but, it's nicer to just get a friendly beep
+" instead of the "buffer not modifiable" error message.
 
 nnoremap <buffer> A <Esc>
 nnoremap <buffer> a <Esc>
@@ -85,6 +110,5 @@ nnoremap <buffer> O <Esc>
 nnoremap <buffer> D <Esc>
 nnoremap <buffer> p <Esc>
 nnoremap <buffer> P <Esc>
-nnoremap <buffer> s <Esc>
 nnoremap <buffer> X <Esc>
 
