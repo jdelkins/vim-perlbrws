@@ -11,7 +11,7 @@
 " ftdetect/perlbrws.vim
 " syntax/perlbrws.vim
 
-" If 'filetype' isn't "perlbrws", the file may have been loaded directly --
+" If 'filetype' isn't "perlbrws", the script may have been loaded directly --
 " don't do anything in that case because we don't want to screw up a regular
 " file!
 if &filetype != "perlbrws"
