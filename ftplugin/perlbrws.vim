@@ -3,6 +3,8 @@
 " Maintainer:	Joel Elkins <jde@elkins.cx>
 " Last Change:	2004 Jul 15
 "
+" $Header$
+"
 " This plugin implements a dired-esque file browser, that uses perl code to
 " generate the listing.
 "

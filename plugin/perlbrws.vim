@@ -1,6 +1,8 @@
 " Vim global plugin for empowering perl with several cool features
 " Last Change: 2004 Jul 15
 " Maintainer: Joel D. Elkins <jde@elkins.cx>
+"
+" $Header$
 
 " only define functions once
 if exists("loaded_perlbrws") && loaded_perlbrws == 1
