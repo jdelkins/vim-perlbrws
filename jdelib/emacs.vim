@@ -16,7 +16,6 @@
 "endif
 "nnoremap <C-X><C-S> :w<CR>
 "nnoremap <C-X>b     :ls<CR>:b
-cnoremap <C-G>      <C-C>
 inoremap <M-/>      <C-P>
 
 " some emacs-ness in command mode
@@ -31,6 +30,9 @@ cnoremap <C-N>      <Down>
 cnoremap <C-P>      <Up>
 cnoremap <Esc><C-B> <S-Left>
 cnoremap <Esc><C-F> <S-Right>
+cnoremap <M-B>      <S-Left>
+cnoremap <M-F>      <S-Right>
+cnoremap <M-BS>     <C-W>
 
 " some emacs-ness in insert mode
 "inoremap <C-G>      <Esc>
@@ -39,9 +41,9 @@ inoremap <C-B>      <Left>
 inoremap <C-D>      <Del>
 inoremap <C-E>      <End>
 inoremap <C-F>      <Right>
-inoremap <C-N>      <Down>
-inoremap <C-P>      <Up>
+"inoremap <C-N>      <Down>
+"inoremap <C-P>      <Up>
 "inoremap <C-K>      <Esc><Right>C
-inoremap <A-B>      <S-Left>
-inoremap <A-F>      <S-Right>
-
+inoremap <M-B>      <S-Left>
+inoremap <M-F>      <S-Right>
+inoremap <M-BS>     <C-W>
