@@ -34,11 +34,14 @@ cnoremap <Esc><C-F> <S-Right>
 
 " some emacs-ness in insert mode
 "inoremap <C-G>      <Esc>
-"inoremap <C-A>      <Home>
-"inoremap <C-B>      <Left>
-"inoremap <C-D>      <Del>
-"inoremap <C-E>      <End>
-"inoremap <C-F>      <Right>
-"inoremap <C-N>      <Down>
-"inoremap <C-P>      <Up>
+inoremap <C-A>      <Home>
+inoremap <C-B>      <Left>
+inoremap <C-D>      <Del>
+inoremap <C-E>      <End>
+inoremap <C-F>      <Right>
+inoremap <C-N>      <Down>
+inoremap <C-P>      <Up>
 "inoremap <C-K>      <Esc><Right>C
+inoremap <A-B>      <S-Left>
+inoremap <A-F>      <S-Right>
+
