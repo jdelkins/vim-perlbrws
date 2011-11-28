@@ -15,8 +15,14 @@ if !has("perl")
 	finish
 endif
 
+command! -nargs=? -complete=dir Perlbrws call perlbrws#enter(<q-args>)
+
 function! perlbrws#enter(...)
-	let goto = a:0 ? a:1 : expand("%:p:h")
+	if !a:0 || a:1 == ""
+		let goto = expand("%:p:h")
+	else
+		let goto = a:1
+	endif
 	call <SID>Enter(goto)
 endfunction
 
