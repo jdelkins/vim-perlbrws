@@ -5,23 +5,24 @@
 " $Header$
 
 " only define functions once
-if exists("loaded_perlbrws") && loaded_perlbrws == 1
+if exists("g:loaded_perlbrws") && g:loaded_perlbrws == 1
 	finish
 endif
-let loaded_perlbrws = 1
+let g:loaded_perlbrws = 1
 
 if !has("perl")
 	echoerr "Plugin perlbrws.vim requires the +perl feature to be compiled in, disabling"
 	finish
 endif
 
-" global mappings
-if !hasmapto('<Plug>PerlbrwsEnter')
-	map <unique> <Leader>d <Plug>PerlbrwsEnter
-endif
-noremap <unique> <script> <Plug>PerlbrwsEnter <SID>Enter
+function! perlbrws#enter(...)
+	let goto = a:0 ? a:1 : expand("%:p:h")
+	call <SID>Enter(goto)
+endfunction
+
+" menu definintion
 noremenu <script> Plugin.File\ Browser\ (Perl) <SID>Enter
-noremap <SID>Enter :call <SID>Enter(expand("%:p:h"))<CR>
+noremap <SID>Enter :call perlbrws#enter()<CR>
 
 noremap <unique> <script> <Plug>PerlbrwsGo <SID>Go
 noremap <SID>Go :call <SID>Go()<CR>
@@ -356,15 +357,20 @@ perl <<EOPERL
 			or confess 'requires an FileBrowser object';
 		my $ind = shift;
 		my $f = $self->{LS}->[$ind];
+		#VIM::Msg("isdir: testing index $ind");
 		return checkdir($f);
 	}
 
 	sub checkdir($) {
 		my $f = shift; # stat info arrayref
 		if (&islnk($f) && $f->[$i_linkstat]) {
+			#VIM::Msg("checkdir: it's a link");
 			return S_ISDIR($f->[2 + $i_linkstat]);
 		}
-		return S_ISDIR($f->[2]);
+		#VIM::Msg("checkdir: about to call S_ISDIR");
+		my $rc = S_ISDIR($f->[2]);
+		#VIM::Msg("checkdir: S_ISDIR is $rc");
+		return  ($rc > 0);
 	}
 
 	# Set whether or not to list dot files.
@@ -741,7 +747,8 @@ perl <<EOPERL
 	# result stored in variable 'isdir'
 	sub getisdir() {
 		my $line = VIM::Eval('line(".")');
-		VIM::DoCommand('let isdir = ' . $fb->isdir($line - 2));
+		my $rc = $fb->isdir($line - 2) ? 1 : 0;
+		VIM::DoCommand('let curisdir = ' . $rc);
 	}
 
 	# change the file browser directory to the given directory.
@@ -866,7 +873,7 @@ function s:Go()
 	if curline == 1
 		" if it's on the first line, this should have been handled by
 		" the appropriate command (refer to ftplugin/perlbrws.vim)
-		echoerr "The plugin/perlbrws.vim script has a bug"
+		echoerr "The autoload/perlbrws.vim script has a bug"
 		return
 	endif
 
@@ -877,7 +884,7 @@ function s:Go()
 	perl VimFileBrowser::getcurfile()
 	perl VimFileBrowser::getisdir()
 
-	if isdir
+	if curisdir
 		exe ":perl VimFileBrowser::do_chdir_to('".curfile."')"
 		return
 	endif
