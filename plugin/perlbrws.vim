@@ -27,8 +27,7 @@ function! perlbrws#enter(...)
 endfunction
 
 " menu definintion
-noremenu <script> Plugin.File\ Browser\ (Perl) <SID>Enter
-noremap <SID>Enter :call perlbrws#enter()<CR>
+noremenu Plugin.File\ Browser\ (Perl) :Perlbrws<CR>
 
 noremap <unique> <script> <Plug>PerlbrwsGo <SID>Go
 noremap <SID>Go :call <SID>Go()<CR>
@@ -911,7 +910,7 @@ function s:Go()
 endfunction
 
 function s:Enter(dir)
-	let s:dirfile = expand("-Browser-")
+	let s:dirfile = expand("[Browser]")
 	if &filetype != "perlbrws"
 		" look for a perlbrws among the open windows
 		" credit: code adapted from man.vim ftplugin
