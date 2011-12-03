@@ -29,8 +29,8 @@ endfunction
 " menu definintion
 noremenu Plugin.File\ Browser\ (Perl) :Perlbrws<CR>
 
-noremap <unique> <script> <Plug>PerlbrwsGo <SID>Go
-noremap <SID>Go :call <SID>Go()<CR>
+noremap <unique> <script> <Plug>PerlbrwsGo :call <SID>Go()<CR>
+noremap <unique> <script> <Plug>PerlbrwsChdir :ChdirTo<Space>
 
 " ******************************************************************************************************
 " Define the Vim_Buffer package
@@ -401,7 +401,7 @@ perl <<EOPERL
 	sub errm() {
 		ref(my $self = shift) eq 'FileBrowser'
 			or confess 'requires an FileBrowser object';
-		return $self->{ERRM};
+		return "Perlbrws: " . $self->{ERRM};
 	}
 
 	# Return the number of marked files, or all marks in array context
@@ -650,28 +650,6 @@ perl <<EOPERL
 	# subs callable from VIM (public subs)
 	##########################################################
 
-	# to be called from the initial entry point (a VIM map)
-	# &list() should be called from the BufNewFile autocmd
-	sub enter {
-		my $cwd = shift;
-		if (!$fb->cd($cwd)) {
-			VIM::Msg($fb->errm(), "ErrorMsg");
-			return;
-		}
-		VIM::DoCommand('lcd '.$cwd);
-		#my $ch = VIM::Eval('&ch');
-		#VIM::DoCommand('set ch=2') if $ch < 2;
-		#if ($mod) {
-		#	VIM::DoCommand("new $dirfile");
-		#} else {
-		#	VIM::DoCommand("edit $dirfile");
-		#}
-		#VIM::DoCommand("set ch=$ch") if $ch < 2;
-		#VIM::DoCommand('normal 1G');
-		#VIM::DoCommand('normal 4G');
-		#VIM::DoCommand('normal 56|');
-	}
-
 	# toggle whether to display dot-files
 	sub dots_toggle {
 		$fb->dots(!$fb->dots());
@@ -760,7 +738,7 @@ perl <<EOPERL
 	# does not affect VIM's current directory
 	sub do_chdir_to($) {
 		my $d = shift;
-		$d = VIM::Eval('expand(\''.$d.'\')');
+		$d = VIM::Eval("expand('$d')");
 		#VIM::Msg($d);
 		return if ($d =~ /^$/);
 		if (!$fb->cd($d)) {
@@ -817,7 +795,6 @@ perl <<EOPERL
 		}
 		$fb->ls();
 		&refresh();
-		VIM::DoCommand('lcd '.$fb->cd());
 		VIM::DoCommand('echomsg "' . ($main::curbuf->Count() - 1) . ' files"');
 		VIM::DoCommand('normal 1G');
 		VIM::DoCommand('normal 4G');
@@ -903,7 +880,7 @@ function s:Go()
 	else
 		exe bufwinnr(s:prevbuf) . "wincmd w"
 	endif
-	exe "edit " . curfile
+	exe "edit " . escape(curfile, ' ')
 	set modifiable
 	exe listbuf . "bdelete"
 	"exe bufwinnr(curfile) . "wincmd w"
@@ -939,11 +916,10 @@ function s:Enter(dir)
 				endif
 			endwhile
 		endif
-		silent exec "edit ".s:dirfile
+		silent exec "edit " . s:dirfile
 		set buftype=nofile noswapfile
-		exe ":perl VimFileBrowser::enter('" . a:dir ."')"
+		exe ":perl VimFileBrowser::do_chdir_to('" . a:dir . "')"
 	endif
-	perl VimFileBrowser::list()
 	setlocal ft=perlbrws nomod
 	setlocal bufhidden=hide
 	setlocal nobuflisted

@@ -33,19 +33,15 @@ let b:did_ftplugin = 1
 " <CR> or <2-LeftMouse> depending on which line of the file is active:
 " On the first line, we want to change directories, otherwise navigate
 " to the selected file.
-nmap <buffer> <2-LeftMouse> <SID>Action
-nmap <buffer> <CR> <SID>Action
-nmap <buffer> <SID>Action :call <SID>Remap()<CR><SID>ActionMap
+nmap <expr> <buffer> <2-LeftMouse> <SID>Remap()
+nmap <expr> <buffer> <CR>          <SID>Remap()
 function! s:Remap()
 	if line(".") == 1
-		nmap <buffer> <SID>ActionMap <SID>Chdir
+		return "\<Plug>PerlbrwsChdir"
 	else
-		nmap <buffer> <SID>ActionMap <SID>Go
+		return "\<Plug>PerlbrwsGo"
 	endif
 endf
-nmap <SID>Go <Plug>PerlbrwsGo
-" Note: the follwoing map has an intentional trailing space on the rhs
-nmap <SID>Chdir :ChdirTo 
 
 " Various file actions
 " TODO: these should probably call Plugin functions, not perl code
