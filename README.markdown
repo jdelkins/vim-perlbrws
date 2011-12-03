@@ -16,9 +16,13 @@ windows (especially vim+perl on windows). Eventually I made do with netrw
 browsing, even though I like this a lot better.
 
 Requires a Vim installation with `+perl` or `+perl/dyn`. Working configurations
-(versions of Vim and Perl) are not known at this point.  It more or less works
-with vim-7.3.154 and perl-5.12.4 on my ubuntu box at this time, but I haven't
-tested it on other setups.
+(versions of Vim and Perl) are not well known at this point.  It more or less
+works with the following configurations:
+
+* vim-7.3.154 and perl-5.12.4 on my Ubuntu 11.10 box
+* vim-7.3.364 and perl-5.12.3 on my Windows 7 x64 machine
+  
+... but I haven't tested it on other setups at this point.
 
 Basic Usage
 -----------
@@ -26,22 +30,27 @@ Basic Usage
 After installation, use `:Perlbrws` to start the browser in the directory of
 the file in the current buffer. You can also use `:Perlbrws /foo/bar` to start
 browsing in an arbitrary directory. This will open a new window with
-a directory listing similar to `ls -l`:
+a directory listing similar to `ls -lF`:
 
-	drwxr-xr-x   6 joel     Domain U     4096 Dec  2 22:59 ./
-	drwxr-xr-x   9 joel     JDE Priv     4096 Dec  2 22:35 ../
-	drwxr-xr-x   2 joel     Domain U     4096 Dec  2 22:39 ftplugin/
-	drwxr-xr-x   2 joel     Domain U     4096 Dec  2 22:52 plugin/
-	drwxr-xr-x   2 joel     Domain U     4096 Dec  2 22:39 syntax/
+	PATH: C:/Users/jde.ELKINS/vimfiles/bundle/perlbrws
+	drwxrwxrwx   1 nobody   nobody          0 Dec 02 23:56 ./
+	drwxrwxrwx   1 nobody   nobody          0 Dec 02 23:54 ../
+	drwxrwxrwx   1 nobody   nobody          0 Dec 02 23:54 ftplugin/
+	drwxrwxrwx   1 nobody   nobody          0 Dec 02 23:56 plugin/
+	drwxrwxrwx   1 nobody   nobody          0 Dec 02 23:54 syntax/
+	-rw-rw-rw-   1 nobody   nobody       3507 Dec 02 23:54 README.markdown
 
 From there, use `j` and `k` (and other normal navigation maps) to move around.
-Pressing `<CR>` on a line does something depending on what line you are on when
-you press it.
+Pressing `<CR>` on a line does something depending on what line you the cursor
+is on when you press it.
 
-* If it is a directory, navigate to that directory, replacing the contents of
-  the buffer with the contents of the new directory.
-* If it is a file, then open the file for editing, replacing the window that
-  the browser resides in.
+* If the cursor is a directory, navigate to that directory, replacing the
+  contents of the buffer with the contents of the new directory.
+* If the cursor is a file, then open the file for editing, replacing the window
+  that the browser resides in.
+* If the cursor is on the very top line (which shows the current directory, it
+  will invoke a prompt on the Vim command line to change to a different,
+  arbitrary directory.
 
 There is some logic applied as to how to display the explorer buffer. If you
 have unsaved changes in the current buffer, it will split a new window for the
