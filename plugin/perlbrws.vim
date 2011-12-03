@@ -1,10 +1,14 @@
-" Vim global plugin for empowering perl with several cool features
-" Last Change: 2004 Jul 15
-" Maintainer: Joel D. Elkins <jde@elkins.cx>
-"
-" $Header$
+" File:        plugin/perlbrws.vim
+" Version:     2.0
+" Maintainer:  Joel D. Elkins <joel@elkins.com>
+" Description:
+" Plugin for vim to present a browser window to the user. This is the model
+" aspect, with the code that actually does the work.  ftplugin/perlbrws.vim is
+" controller, containing key mappings and so forth to provide a user interface.
+" syntax/perlbrws.vim contains the code to direct the visual appearance, and so
+" implements the view.
 
-" only define functions once
+" Load Guard                                                               {{{1
 if exists("g:loaded_perlbrws") && g:loaded_perlbrws == 1
 	finish
 endif
@@ -15,6 +19,7 @@ if !has("perl")
 	finish
 endif
 
+" External API                                                             {{{1
 command! -nargs=? -complete=dir Perlbrws call perlbrws#enter(<q-args>)
 
 function! perlbrws#enter(...)
@@ -32,9 +37,16 @@ noremenu Plugin.File\ Browser\ (Perl) :Perlbrws<CR>
 noremap <unique> <script> <Plug>PerlbrwsGo :call <SID>Go()<CR>
 noremap <unique> <script> <Plug>PerlbrwsChdir :ChdirTo<Space>
 
-" ******************************************************************************************************
-" Define the Vim_Buffer package
-" ******************************************************************************************************
+" **************************************************************************}}}
+" Vim_Buffer package                                                       {{{1
+" 
+" This is so overly complex it is ridiculous but it does seem to work.
+" Basically this is a construct that allows tie-ing a Vim buffer to an array,
+" so that you can straigthforwardly manipulate the contents of the buffer using
+" array manipulation. Nice idea, but in this module all we do is wipe out the
+" existing contents and re-write, which could have been done simply enough with
+" standard editing commands.
+" *****************************************************************************
 function s:SetupVimBuffer()
 perl <<EOPERL
 	package Vim_Buffer;
@@ -161,9 +173,16 @@ perl <<EOPERL
 EOPERL
 endfunction
 
-" ******************************************************************************************************
-" Define the FileBrowser package
-" ******************************************************************************************************
+" **************************************************************************}}}
+" FileBrowser package                                                      {{{1
+"
+" This package does the acutal work to select the target directory, read the
+" target directory, populate an array structure containing details of the files
+" therein.  Details stored include filename, and stat info, which is used both
+" to ascertain file type (dir, file, symlink, etc) and to show file mode and
+" owner/group.  This package Also handles sorting.  Display is done through the
+" Vim_Buffer module, by writing the formatted listing into a tied array.
+" *****************************************************************************
 function s:SetupFileBrowser()
 perl <<EOPERL
 	package FileBrowser;
@@ -626,6 +645,7 @@ perl <<EOPERL
 EOPERL
 endfunction
 
+" 
 function s:SetupVimFileBrowser()
 perl <<EOPERL
 	package VimFileBrowser;
@@ -844,6 +864,10 @@ perl <<EOPERL
 EOPERL
 endfunction
 
+" s:Go function                                                            {{{1
+"
+" Called when the user wants to do the default action with the selected item in
+" the browser list
 function s:Go()
 	" get file to edit
 	if &modified
@@ -886,6 +910,10 @@ function s:Go()
 	"exe bufwinnr(curfile) . "wincmd w"
 endfunction
 
+" s:Enter function                                                         {{{1
+"
+" Main entry point -- set up the browser window, and invoke the perl code that
+" will initialize the listing
 function s:Enter(dir)
 	let s:dirfile = expand("[Browser]")
 	if &filetype != "perlbrws"
@@ -926,8 +954,11 @@ function s:Enter(dir)
 	setlocal nomodifiable
 endfunction
 
+" }}}
+
 " define the perl modules
 call s:SetupVimBuffer()
 call s:SetupFileBrowser()
 call s:SetupVimFileBrowser()
 
+" vim:fdm=marker:
