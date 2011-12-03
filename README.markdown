@@ -59,8 +59,8 @@ There is some logic applied as to how to display the explorer buffer. If you
 have unsaved changes in the current buffer, it will split a new window for the
 browser. Otherwise it will replace the current window.
 
-Other Commands
---------------
+Browsing Commands
+-----------------
 
 * `c`: prompt on Vim's command line to change directory to an arbitrary
   directory elsewher on the filesystem.
@@ -81,11 +81,13 @@ Other Commands
 Bugs
 ----
 
-* Currently has some issue with directory path elements that contain spaces.
+* I recently noticed some issue with directory path elements that contain
+  spaces.  I think this is resolved now, but demons lurk.
 * Although in the past I used this on Windows platforms, I haven't tested it on
   windows in some years.  There are probably a few bugs specific to that
   configuration.
 * Pretty slow for how simple it is. It probably should be re-written in ruby
   but I don't know that language at all.
 * Antequated and naive VimL style. I think this was written originally in the
-  Vim 5 era and updates have been ...err... sporatic and minimalistic.
+  Vim 5 era and updates have been ... sporatic and minimalistic.  Bascially the
+  code is a mess and needs some TLC.
