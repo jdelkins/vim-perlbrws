@@ -63,7 +63,14 @@ nnoremap <buffer> d :perl VimFileBrowser::do_delete()<CR>
 
 " the follwoing command will change the browser directory, and will
 " tab-complete for directories
-command -buffer -nargs=1 -complete=dir ChdirTo :perl VimFileBrowser::do_chdir_to(<q-args>)
+command -buffer -nargs=1 -complete=dir ChdirTo :call <SID>Chdir(<q-args>)
+
+function! s:Chdir(path)
+	silent redir => pbmessages
+	exe "perl VimFileBrowser::do_chdir_to('".a:path."')"
+	silent redir END
+endfunction
+
 
 " the following command sets the sort type
 command -buffer -nargs=1 -complete=custom,<SID>ListSortTypes SetSort :call <SID>SetSort(<q-args>)
