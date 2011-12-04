@@ -27,21 +27,28 @@ works with the following configurations:
 Installation
 ------------
 
-I suggest using
-[pathogen](http://www.vim.org/scripts/script.php?script_id=2332), in which case
-you can just do this:
+I suggest using [pathogen][pg], in which case you can just do this:
 
 	mkdir -p ~/.vim/bundle && cd ~/.vim/bundle && \
 	git clone https://jdelkins@github.com/jdelkins/vim-perlbrws.git perlbrws
 
-Without [pathogen](), do this:
+Without [pathogen][pg], you need to download [the Perlbrws package][zipball],
+then get the files into corresponding directories in your `runtimepath`.
+Something like this should do it:
 
 	mkdir -p ~/.vim/{bundle,ftplugin,syntax}
 	wget -O perlbrws.zip https://github.com/jdelkins/vim-perlbrws/zipball/master
+	unzip perlbrws.zip -d /tmp
+	for d in plugin ftplugin syntax; do
+		mv /tmp/jdelkins-vim-perlbrws*/$d/perlbrws.vim ~/.vim/$d/
+	done
+	rm -rf /tmp/jdelkins-vim-perlbrws*
 
-Then unzip `perlbrws.zip` and put the contents in the corresponding directory
-inside of `~/.vim`. There are only three files that matter: one each inside of
-`plugin`, `ftplugin`, and `syntax`.
+There are only three files that matter: one each inside of `plugin`,
+`ftplugin`, and `syntax`.
+
+[pg]: http://www.vim.org/scripts/script.php?script_id=2332
+[zipball]: https://github.com/jdelkins/vim-perlbrws/zipball/master
 
 Basic Usage
 -----------
