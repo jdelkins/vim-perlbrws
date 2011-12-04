@@ -24,6 +24,25 @@ works with the following configurations:
   
 ... but I haven't tested it on other setups at this point.
 
+Installation
+------------
+
+I suggest using
+[pathogen](http://www.vim.org/scripts/script.php?script_id=2332), in which case
+you can just do this:
+
+	mkdir -p ~/.vim/bundle && cd ~/.vim/bundle && \
+	git clone https://jdelkins@github.com/jdelkins/vim-perlbrws.git perlbrws
+
+Without [pathogen](), do this:
+
+	mkdir -p ~/.vim/{bundle,ftplugin,syntax}
+	wget -O perlbrws.zip https://github.com/jdelkins/vim-perlbrws/zipball/master
+
+Then unzip `perlbrws.zip` and put the contents in the corresponding directory
+inside of `~/.vim`. There are only three files that matter: one each inside of
+`plugin`, `ftplugin`, and `syntax`.
+
 Basic Usage
 -----------
 
